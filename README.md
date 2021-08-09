@@ -13,6 +13,7 @@ cmp.setup({
 
 ## For ddc
 ```vim
+call ddc#custom#patch_global('sources', ['look'])
 ```
 
 ## Alternatives
