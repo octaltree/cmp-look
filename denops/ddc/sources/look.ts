@@ -23,7 +23,7 @@ export class Source extends BaseSource {
     completeStr: string,
   ): Promise<Candidate[]> {
     const out = await sh(["look", "--", completeStr]);
-    const words = out.split("\n").map(String.prototype.trim).filter((w) => w);
+    const words = out.split("\n").map((w) => w.trim()).filter((w) => w);
     return words.map((word) => ({ word }));
   }
 
