@@ -25,7 +25,8 @@ local split = function(str)
 end
 
 M.complete = function(self, request, callback)
-  local q = 'app'
+  local q = string.sub(request.context.cursor_before_line, request.offset + 1)
+  debug.log(q)
   local stdin = luv.new_pipe(false)
   local stdout = luv.new_pipe(false)
   local stderr = luv.new_pipe(false)
