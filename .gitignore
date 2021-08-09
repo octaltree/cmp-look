@@ -1,1 +1,6 @@
 *.swp
+.stack-work
+__pycache__
+.fuse*
+.nfs*
+.ropeproject
