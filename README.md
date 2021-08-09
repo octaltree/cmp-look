@@ -13,10 +13,6 @@ cmp.setup({
 
 ## For ddc
 ```vim
-call ddc#register_source({
-      \ 'name': 'look',
-      \ 'path': 'https://raw.githubusercontent.com/octaltree/ddc-look/master/denops/ddc/sources/look.ts'
-      \ })
 ```
 
 ## Alternatives
