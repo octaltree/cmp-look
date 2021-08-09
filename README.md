@@ -18,3 +18,7 @@ call ddc#register_source({
       \ 'path': 'https://raw.githubusercontent.com/octaltree/ddc-look/master/denops/ddc/sources/look.ts'
       \ })
 ```
+
+## Alternatives
+* [ujihisa/neco-look](https://github.com/ujihisa/neco-look)
+* [matsui54/ddc-dictionary](https://github.com/matsui54/ddc-dictionary)
