@@ -24,28 +24,29 @@ local split = function(str)
   return ret
 end
 
+local candidates = function(words)
+  local ret = {}
+  for _, w in ipairs(words) do
+    table.insert(ret, {label=w})
+  end
+  return ret
+end
+
 M.complete = function(self, request, callback)
-  local q = string.sub(request.context.cursor_before_line, request.offset + 1)
-  debug.log(q)
+  local q = string.sub(request.context.cursor_before_line, request.offset)
   local stdin = luv.new_pipe(false)
   local stdout = luv.new_pipe(false)
   local stderr = luv.new_pipe(false)
   local handle, pid
-  local out = ''
-  local candidates = function(words)
-    local ret = {}
-    for _, w in ipairs(words) do
-      table.insert(ret, {label=w})
-    end
-    return ret
-  end
+  local buf = ''
+  local words = {}
   do
     local function onexit(code, signal)
       stdin:close()
       stdout:close()
       stderr:close()
       handle:close()
-      callback(candidates(split(out)))
+      callback(candidates(words))
     end
     local spawn_params = {
       args = {'--', q},
@@ -58,7 +59,15 @@ M.complete = function(self, request, callback)
     luv.read_start(stdout, function(err, chunk)
       assert(not err, err)
       if chunk then
-        out = out .. chunk
+        buf = buf .. chunk
+      end
+      local sp = split(buf)
+      for i, w in ipairs(sp) do
+        if i ~= #sp then
+          table.insert(words, w)
+        else
+          buf = w
+        end
       end
     end)
   end
