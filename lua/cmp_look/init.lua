@@ -26,6 +26,15 @@ local split = function(str)
   return ret
 end
 
+local has = function(target, arr)
+  for _, v in ipairs(arr) do
+    if target == v then
+      return true
+    end
+  end
+  return false
+end
+
 M.complete = function(self, request, callback)
   local q = string.sub(request.context.cursor_before_line, request.offset)
   local res = {}
@@ -37,7 +46,7 @@ M.complete = function(self, request, callback)
     on_stdout = function(err, chunk)
       local words = split(chunk)
       for _, word in ipairs(words) do
-        if #res < self.word_limit then
+        if #res < self.word_limit and not has(word, res) then
           table.insert(res, { label = word })
         end
       end
