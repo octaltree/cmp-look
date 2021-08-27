@@ -10,7 +10,7 @@ M.new = function()
 end
 
 M.get_keyword_pattern = function()
-  return '\\w\\+'
+  return [[\w\+]]
 end
 
 local split = function(str)
@@ -32,31 +32,35 @@ local candidates = function(words)
   return ret
 end
 
-M.complete = function(self, request, callback)
-  local q = string.sub(request.context.cursor_before_line, request.offset)
+local pipes = function()
   local stdin = luv.new_pipe(false)
   local stdout = luv.new_pipe(false)
   local stderr = luv.new_pipe(false)
+  return {stdin, stdout, stderr}
+end
+
+M.complete = function(self, request, callback)
+  local q = string.sub(request.context.cursor_before_line, request.offset)
+  local stdioe = pipes()
   local handle, pid
   local buf = ''
   local words = {}
   do
-    local function onexit(code, signal)
-      stdin:close()
-      stdout:close()
-      stderr:close()
-      handle:close()
-      vim.schedule_wrap(callback)(candidates(words))
-    end
     local spawn_params = {
       args = {'--', q},
-      stdio = {stdin, stdout, stderr}
+      stdio = stdioe
     }
-    handle, pid = luv.spawn('look', spawn_params, onexit)
+    handle, pid = luv.spawn('look', spawn_params, function(code, signal)
+      stdioe[1]:close()
+      stdioe[2]:close()
+      stdioe[3]:close()
+      handle:close()
+      vim.schedule_wrap(callback)(candidates(words))
+    end)
     if handle == nil then
       debug.log(string.format("start `%s` failed: %s", cmd, pid))
     end
-    luv.read_start(stdout, function(err, chunk)
+    luv.read_start(stdioe[2], function(err, chunk)
       assert(not err, err)
       if chunk then
         buf = buf .. chunk
