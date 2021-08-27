@@ -1,11 +1,13 @@
 local cmp = require('cmp')
 local luv = require('luv')
 local debug = require('cmp.utils.debug')
+local Job = require('plenary.job')
 
 local M = {}
 
 M.new = function()
   local self = setmetatable({}, { __index = M })
+  self.word_limit = 4000
   return self
 end
 
@@ -24,53 +26,28 @@ local split = function(str)
   return ret
 end
 
-local candidates = function(words)
-  local ret = {}
-  for _, w in ipairs(words) do
-    table.insert(ret, {label=w})
-  end
-  return ret
-end
-
 M.complete = function(self, request, callback)
   local q = string.sub(request.context.cursor_before_line, request.offset)
-  local stdin = luv.new_pipe(false)
-  local stdout = luv.new_pipe(false)
-  local stderr = luv.new_pipe(false)
-  local handle, pid
-  local buf = ''
-  local words = {}
-  do
-    local function onexit(code, signal)
-      stdin:close()
-      stdout:close()
-      stderr:close()
-      handle:close()
-      callback(candidates(words))
-    end
-    local spawn_params = {
-      args = {'--', q},
-      stdio = {stdin, stdout, stderr}
-    }
-    handle, pid = luv.spawn('look', spawn_params, onexit)
-    if handle == nil then
-      debug.log(string.format("start `%s` failed: %s", cmd, pid))
-    end
-    luv.read_start(stdout, function(err, chunk)
-      assert(not err, err)
-      if chunk then
-        buf = buf .. chunk
-      end
-      local sp = split(buf)
-      for i, w in ipairs(sp) do
-        if i ~= #sp then
-          table.insert(words, w)
-        else
-          buf = w
+  local res = {}
+  local processing = true
+
+  Job:new({
+    command = 'look',
+    args = {'--', q},
+    on_stdout = function(err, chunk)
+      local words = split(chunk)
+      for _, word in ipairs(words) do
+        if #res < self.word_limit then
+          table.insert(res, { label = word })
         end
       end
-    end)
-  end
+    end,
+    on_exit = function(j, return_val)
+      processing = false
+    end
+  }):sync()
+
+  callback({ items = res, isIncomplete = processing })
 end
 
 return M
