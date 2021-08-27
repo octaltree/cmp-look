@@ -10,7 +10,7 @@ M.new = function()
 end
 
 M.get_keyword_pattern = function()
-  return '\\w\\+'
+  return [[\w\+]]
 end
 
 local split = function(str)
