@@ -7,12 +7,11 @@ local M = {}
 
 M.new = function()
   local self = setmetatable({}, { __index = M })
-  self.word_limit = 4000
   return self
 end
 
 M.get_keyword_pattern = function()
-  return [[\w\+]]
+  return [[\w\{2,}]]
 end
 
 local split = function(str)
@@ -46,9 +45,7 @@ M.complete = function(self, request, callback)
     on_stdout = function(err, chunk)
       local words = split(chunk)
       for _, word in ipairs(words) do
-        if #res < self.word_limit and not has(word, res) then
-          table.insert(res, { label = word })
-        end
+        table.insert(res, { label = word })
       end
     end,
     on_exit = function(j, return_val)

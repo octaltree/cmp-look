@@ -7,10 +7,6 @@ This is look source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp) 
 local cmp = require('cmp')
 local source = require('cmp_look').new()
 
--- limits the number of words in order to reduce UI blocking. If you want better
--- result just increase the number up.
-source.word_limit = 4000
-
 cmp.register_source('look', source)
 cmp.setup({
   sources={{name='look'}}
