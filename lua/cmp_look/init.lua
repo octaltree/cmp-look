@@ -46,7 +46,7 @@ M.complete = function(self, request, callback)
       stdout:close()
       stderr:close()
       handle:close()
-      callback(candidates(words))
+      vim.schedule_wrap(callback)(candidates(words))
     end
     local spawn_params = {
       args = {'--', q},
