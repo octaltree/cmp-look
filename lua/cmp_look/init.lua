@@ -9,10 +9,6 @@ M.new = function()
   return self
 end
 
-M.get_keyword_pattern = function()
-  return [[\w\+]]
-end
-
 local split = function(str)
   local sep = '%s'
   local ret = {}
