@@ -9,15 +9,18 @@ M.new = function()
   return self
 end
 
-local split = function(str)
-  local sep = '%s'
-  local ret = {}
-  for s in string.gmatch(str, '([^'..sep..']+)') do
-    if s ~= '' then
-      table.insert(ret, s)
-    end
+local trim = function(str)
+  return string.gsub(str, '^%s*(.-)%s*$', '%1')
+end
+
+local line = function(str)
+  local s, e, cap = string.find(str, '\n')
+  if not s then
+    return nil, str
   end
-  return ret
+  local l = string.sub(str, 1, s - 1)
+  local rest = string.sub(str, e + 1)
+  return l, rest
 end
 
 local result = function(words)
@@ -65,12 +68,15 @@ M.complete = function(self, request, callback)
       if chunk then
         buf = buf .. chunk
       end
-      local ws = split(buf)
-      for i, w in ipairs(ws) do
-        if i ~= #ws then
+      while true do
+        local l, rest = line(buf)
+        if l == nil then
+          break
+        end
+        buf = rest
+        local w = trim(l)
+        if w ~= '' then
           table.insert(words, w)
-        else
-          buf = w
         end
       end
     end)
