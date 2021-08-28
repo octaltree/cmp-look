@@ -65,9 +65,9 @@ M.complete = function(self, request, callback)
       if chunk then
         buf = buf .. chunk
       end
-      local sp = split(buf)
-      for i, w in ipairs(sp) do
-        if i ~= #sp then
+      local ws = split(buf)
+      for i, w in ipairs(ws) do
+        if i ~= #ws then
           table.insert(words, w)
         else
           buf = w

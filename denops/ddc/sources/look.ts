@@ -7,7 +7,7 @@ import {
 } from "https://deno.land/x/ddc_vim@v0.0.11/types.ts#^";
 import { Denops } from "https://deno.land/x/ddc_vim@v0.0.11/deps.ts#^";
 
-async function sh(cmd: string[]): Promise<string> {
+async function run(cmd: string[]): Promise<string> {
   const p = Deno.run({ cmd, stdout: "piped", stderr: "null", stdin: "null" });
   await p.status();
   return new TextDecoder().decode(await p.output());
@@ -22,7 +22,7 @@ export class Source extends BaseSource {
     _sourceParams: Record<string, unknown>,
     completeStr: string,
   ): Promise<Candidate[]> {
-    const out = await sh(["look", "--", completeStr]);
+    const out = await run(["look", "--", completeStr]);
     const words = out.split("\n").map((w) => w.trim()).filter((w) => w);
     return words.map((word) => ({ word }));
   }
