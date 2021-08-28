@@ -37,6 +37,10 @@ end
 
 M.complete = function(self, request, callback)
   local q = string.sub(request.context.cursor_before_line, request.offset)
+  if string.len(q) < 2 then -- TODO: user-configurable
+    callback()
+    return
+  end
   local stdioe = pipes()
   local handle, pid
   local buf = ''
