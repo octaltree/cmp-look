@@ -20,12 +20,12 @@ local split = function(str)
   return ret
 end
 
-local candidates = function(words)
-  local ret = {}
+local result = function(words)
+  local items = {}
   for _, w in ipairs(words) do
-    table.insert(ret, {label=w})
+    table.insert(items, {label=w})
   end
-  return ret
+  return {items=items, isIncomplete=true}
 end
 
 local pipes = function()
@@ -55,7 +55,7 @@ M.complete = function(self, request, callback)
       stdioe[2]:close()
       stdioe[3]:close()
       handle:close()
-      vim.schedule_wrap(callback)(candidates(words))
+      vim.schedule_wrap(callback)(result(words))
     end)
     if handle == nil then
       debug.log(string.format("start `%s` failed: %s", cmd, pid))
