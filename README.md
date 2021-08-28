@@ -4,9 +4,7 @@ This is look source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp) 
 
 ## For nvim-cmp
 ```lua
-local cmp = require('cmp')
-cmp.register_source('look', require('cmp_look').new())
-cmp.setup({
+require('cmp').setup({
   sources={{name='look'}}
 })
 ```
