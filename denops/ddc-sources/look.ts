@@ -1,11 +1,8 @@
 import {
   BaseSource,
   Candidate,
-  Context,
-  DdcOptions,
-  SourceOptions,
-} from "https://deno.land/x/ddc_vim@v0.0.11/types.ts#^";
-import { Denops } from "https://deno.land/x/ddc_vim@v0.0.11/deps.ts#^";
+} from "https://deno.land/x/ddc_vim@v0.4.0/types.ts#^";
+import { GatherCandidatesArguments } from "https://deno.land/x/ddc_vim@v0.4.0/base/source.ts#^";
 
 async function run(cmd: string[]): Promise<string> {
   const p = Deno.run({ cmd, stdout: "piped", stderr: "null", stdin: "null" });
@@ -14,20 +11,14 @@ async function run(cmd: string[]): Promise<string> {
 }
 
 export class Source extends BaseSource {
-  async gatherCandidates(
-    _denops: Denops,
-    _context: Context,
-    _ddcOptions: DdcOptions,
-    _sourceOptions: SourceOptions,
-    _sourceParams: Record<string, unknown>,
-    completeStr: string,
-  ): Promise<Candidate[]> {
+  async gatherCandidates({
+    completeStr,
+  }: GatherCandidatesArguments): Promise<Candidate[]> {
     const out = await run(["look", "--", completeStr]);
-    const words = out.split("\n").map((w) => w.trim()).filter((w) => w);
+    const words = out
+      .split("\n")
+      .map((w) => w.trim())
+      .filter((w) => w);
     return words.map((word) => ({ word }));
-  }
-
-  params(): Record<string, unknown> {
-    return {};
   }
 }
