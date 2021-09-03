@@ -25,13 +25,11 @@ type Case = {
 function conv(series: Case[], word: string): string {
   let ret = "";
   let offset = 0;
+  const f = (v: number, s: string) =>
+    v < 0 ? s.toLowerCase() : v > 0 ? s.toUpperCase() : s;
   for (const s of series) {
-    const target = word.slice(offset, s.n);
-    ret += s.v < 0
-      ? target.toLowerCase()
-      : s.v > 0
-      ? target.toUpperCase()
-      : target;
+    const target = word.slice(offset, offset + s.n);
+    ret += f(s.v, target);
     offset += s.n;
   }
   ret += word.slice(offset);
@@ -92,6 +90,13 @@ export class Source extends BaseSource {
 
 Deno.test("conv", function () {
   assertEquals(conv([{ v: 1, n: 2 }], "azadrachta"), "AZadrachta");
+  assertEquals(
+    conv(
+      [{ v: 1, n: 1 }, { v: -1, n: 1 }, { v: 1, n: 1 }, { v: -1, n: 2 }],
+      "assemblable",
+    ),
+    "AsSemblable",
+  );
 });
 
 Deno.test("convert", function () {
@@ -108,6 +113,24 @@ Deno.test("convert", function () {
       "AZadrachta",
       "AZafrin",
       "AZalea",
+    ],
+  );
+  assertEquals(
+    convert("AsSem", [
+      "assemblable",
+      "assemblage",
+      "assemble",
+      "assembler",
+      "assembly",
+      "assemblyman",
+    ]),
+    [
+      "AsSemblable",
+      "AsSemblage",
+      "AsSemble",
+      "AsSembler",
+      "AsSembly",
+      "AsSemblyman",
     ],
   );
 });
