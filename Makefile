@@ -1,3 +1,5 @@
+TSTEST=$(shell grep -rl "Deno.test" denops)
+
 dev: format lint test
 
 lint:
@@ -5,4 +7,4 @@ lint:
 format:
 	deno fmt denops
 test:
-	deno test --unstable -A denops/ddc-sources/look.ts
+	deno test --unstable -A ${TSTEST}
