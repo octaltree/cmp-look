@@ -12,6 +12,13 @@ require('cmp').setup({
 ## For ddc
 ```vim
 call ddc#custom#patch_global('sources', ['look'])
+call ddc#custom#patch_global('sourceOptions', {
+      \ '_': {'matchers': ['matcher_head']},
+      \ 'look': {'converters': ['loud', 'matcher_head'], 'matchers': [], 'mark': 'l', 'isVolatile': v:true}
+      \ })
+call ddc#custom#patch_global('sourceParams', {
+      \ 'look': {'convertCase': v:true}
+      \ })
 ```
 
 ## Alternatives
