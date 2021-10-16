@@ -54,7 +54,7 @@ M.complete = function(self, request, callback)
       stdioe[2]:close()
       stdioe[3]:close()
       handle:close()
-      vim.schedule_wrap(callback)(result(words))
+      callback(result(words))
     end)
     if handle == nil then
       debug.log(string.format("start `%s` failed: %s", cmd, pid))
