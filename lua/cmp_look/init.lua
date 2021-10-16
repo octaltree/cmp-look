@@ -100,7 +100,6 @@ do
         table.insert(flg, 0)
       end
     end
-    print(vim.inspect(flg))
     local spans = {}
     for _, c in ipairs(flg) do
       if #spans == 0 then
@@ -114,7 +113,6 @@ do
         end
       end
     end
-    print(vim.inspect(spans))
     return unique(map(function(w) return conv(spans, w) end, words))
   end
 end
