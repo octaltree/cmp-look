@@ -38,8 +38,91 @@ local pipes = function()
   return {stdin, stdout, stderr}
 end
 
+local function map(f, xs)
+  local ret = {}
+  for _, x in ipairs(xs) do
+    table.insert(ret, f(x))
+  end
+  return ret
+end
+
+local convert_case, isUpper
+do
+  local function conv(spans, word)
+    local ret = ''
+    local i = 1
+    local f = function(v, s)
+      if v < 0 then
+        return s:lower()
+      elseif v > 0 then
+        return s:upper()
+      else
+        return s
+      end
+    end
+    for _, s in ipairs(spans) do
+      target = word:sub(i, i + s.n - 1)
+      ret = ret .. f(s.v, target)
+      i = i + s.n
+    end
+    ret = ret .. string.sub(word, i)
+    return ret;
+  end
+
+  local function isLower(c)
+    return c:lower() == c
+  end
+
+  function isUpper(c)
+    return c:upper() == c
+  end
+
+  local function unique(xs)
+    local pool = {}
+    local ret = {}
+    for _, v in ipairs(xs) do
+      if not pool[v] then
+        table.insert(ret, v)
+        pool[v] = true
+      end
+    end
+    return ret
+  end
+
+  function convert_case(query, words)
+    local flg = {}
+    for c in query:gmatch"." do
+      if isLower(c) then
+        table.insert(flg, -1)
+      elseif isUpper(c) then
+        table.insert(flg, 1)
+      else
+        table.insert(flg, 0)
+      end
+    end
+    print(vim.inspect(flg))
+    local spans = {}
+    for _, c in ipairs(flg) do
+      if #spans == 0 then
+        table.insert(spans, {v = c, n = 1})
+      else
+        local last = spans[#spans]
+        if last.v == c then
+          last.n = last.n + 1
+        else
+          table.insert(spans, {v = c, n = 1})
+        end
+      end
+    end
+    print(vim.inspect(spans))
+    return unique(map(function(w) return conv(spans, w) end, words))
+  end
+end
+
 M.complete = function(self, request, callback)
   local q = string.sub(request.context.cursor_before_line, request.offset)
+  local should_convert_case = request.option.convert_case or false
+  local loud = request.option.loud or false
   local stdioe = pipes()
   local handle, pid
   local buf = ''
@@ -54,7 +137,12 @@ M.complete = function(self, request, callback)
       stdioe[2]:close()
       stdioe[3]:close()
       handle:close()
-      callback(result(words))
+      local xs = words
+      if should_convert_case then xs = convert_case(q, xs) end
+      if loud and isUpper(q) then
+        xs = map(function(w) return w:upper() end, xs)
+      end
+      callback(result(xs))
     end)
     if handle == nil then
       debug.log(string.format("start `%s` failed: %s", cmd, pid))

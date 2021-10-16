@@ -6,7 +6,7 @@ This is look source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp) 
 ## For nvim-cmp
 ```lua
 require('cmp').setup({
-  sources={{name='look', keyword_length=2}}
+  sources={{name='look', keyword_length=2, opts={convert_case=true, loud=true}}}
 })
 ```
 
@@ -21,6 +21,17 @@ call ddc#custom#patch_global('sourceParams', {
       \ 'look': {'convertCase': v:true}
       \ })
 ```
+
+## Configuration options
+
+### convert_case cmp/ convertCase ddc (type: boolean)
+Convert the candidates to match the input characters in the case.
+
+### loud cmp (type: boolean)
+Convert the candidates to UPPERCASE if all input characters are uppercase.
+
+### loud ddc (converter)
+A converter instead of option for ddc
 
 ## Alternatives
 * [ujihisa/neco-look](https://github.com/ujihisa/neco-look)
