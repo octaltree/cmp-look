@@ -6,7 +6,7 @@ This is look source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp) 
 ## For nvim-cmp
 ```lua
 require('cmp').setup({
-  sources={{name='look', keyword_length=2, opts={convert_case=true, loud=true}}}
+  sources={{name='look', keyword_length=2, option={convert_case=true, loud=true}}}
 })
 ```
 
