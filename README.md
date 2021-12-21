@@ -1,5 +1,5 @@
 # look source for [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
-This is look source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp) and [Shougo/ddc.vim](https://github.com/Shougo/ddc.vim) inspired by [ujihisa/neco-look](https://github.com/ujihisa/neco-look).
+This is [look](https://man7.org/linux/man-pages/man1/look.1.html) source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp) and [Shougo/ddc.vim](https://github.com/Shougo/ddc.vim) inspired by [ujihisa/neco-look](https://github.com/ujihisa/neco-look).
 
 ![http://gyazo.com/c21c8201fa7a571c7665bc7455d88631.png](http://gyazo.com/c21c8201fa7a571c7665bc7455d88631.png)
 
