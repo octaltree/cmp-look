@@ -9,18 +9,24 @@ function isUpper(c: string): boolean {
   return /^[A-Z]$/g.test(c);
 }
 
-export class Filter extends BaseFilter {
+type Params = Record<string, never>;
+
+export class Filter extends BaseFilter<Params> {
   filter(
-    { completeStr, candidates }: FilterArguments,
+    { completeStr, candidates }: FilterArguments<Params>,
   ): Promise<Candidate[]> {
     const cs = completeStr.split("");
     if (cs.some(isLower) || cs.every((c) => !isUpper(c))) {
       return Promise.resolve(candidates);
     }
-    return candidates.map((candidate) => ({
+    return Promise.resolve(candidates.map((candidate) => ({
       ...candidate,
       word: candidate.word.toUpperCase(),
-      abbr: candidate.abbr ? candidate.abbr.toUpperCase() : null,
-    }));
+      abbr: candidate.abbr ? candidate.abbr.toUpperCase() : undefined,
+    })));
+  }
+
+  params(): Params {
+    return {};
   }
 }
