@@ -67,24 +67,23 @@ type Params = {
   convertCase: boolean;
 };
 
-export class Source extends BaseSource {
+export class Source extends BaseSource<Params> {
   async gatherCandidates({
     sourceParams,
     completeStr,
-  }: GatherCandidatesArguments): Promise<Candidate[]> {
-    const p = sourceParams as unknown as Params;
+  }: GatherCandidatesArguments<Params>): Promise<Candidate[]> {
     const out = await run(["look", "--", completeStr]);
     const words = out.split("\n").map((w) => w.trim()).filter((w) => w);
     const candidates = (words: string[]) => words.map((word) => ({ word }));
-    const cased = p.convertCase ? convert(completeStr, words) : words;
+    const cased = sourceParams.convertCase ? convert(completeStr, words) : words;
     return candidates(cased);
   }
 
-  params(): Record<string, unknown> {
+  params(): Params {
     const params: Params = {
       convertCase: true,
     };
-    return params as unknown as Record<string, unknown>;
+    return params;
   }
 }
 
