@@ -75,7 +75,9 @@ export class Source extends BaseSource<Params> {
     const out = await run(["look", "--", completeStr]);
     const words = out.split("\n").map((w) => w.trim()).filter((w) => w);
     const candidates = (words: string[]) => words.map((word) => ({ word }));
-    const cased = sourceParams.convertCase ? convert(completeStr, words) : words;
+    const cased = sourceParams.convertCase
+      ? convert(completeStr, words)
+      : words;
     return candidates(cased);
   }
 
