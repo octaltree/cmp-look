@@ -6,7 +6,7 @@ This is [look](https://man7.org/linux/man-pages/man1/look.1.html) source for [hr
 ## For nvim-cmp
 ```lua
 require('cmp').setup({
-  sources={{name='look', keyword_length=2, option={convert_case=true, loud=true}}}
+  sources={{name='look', keyword_length=2, option={convert_case=true, loud=true, dict='/usr/share/dict/words'}}}
 })
 ```
 

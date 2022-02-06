@@ -121,13 +121,14 @@ M.complete = function(self, request, callback)
   local q = string.sub(request.context.cursor_before_line, request.offset)
   local should_convert_case = request.option.convert_case or false
   local loud = request.option.loud or false
+  local dict = request.option.dict or ''
   local stdioe = pipes()
   local handle, pid
   local buf = ''
   local words = {}
   do
     local spawn_params = {
-      args = {'--', q},
+      args = {'--', q, dict},
       stdio = stdioe
     }
     handle, pid = luv.spawn('look', spawn_params, function(code, signal)
