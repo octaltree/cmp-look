@@ -124,7 +124,7 @@ M.complete = function(self, request, callback)
   local args
   do
     if request.option.dict then
-      args = {'--', q, request.option.dict}
+      args = {'-f', '--', q, request.option.dict}
     else
       args = {'--', q}
     end
