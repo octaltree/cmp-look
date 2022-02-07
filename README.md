@@ -6,7 +6,17 @@ This is [look](https://man7.org/linux/man-pages/man1/look.1.html) source for [hr
 ## For nvim-cmp
 ```lua
 require('cmp').setup({
-  sources={{name='look', keyword_length=2, option={convert_case=true, loud=true, dict='/usr/share/dict/words'}}}
+    sources = {
+        {
+            name = 'look',
+            keyword_length = 2,
+            option = {
+                convert_case = true,
+                loud = true
+                --dict = '/usr/share/dict/words'
+            }
+        }
+    }
 })
 ```
 
@@ -18,8 +28,10 @@ call ddc#custom#patch_global('sourceOptions', {
       \ 'look': {'converters': ['loud', 'matcher_head'], 'matchers': [], 'mark': 'l', 'isVolatile': v:true}
       \ })
 call ddc#custom#patch_global('sourceParams', {
-      \ 'look': {'convertCase': v:true}
-      \ })
+      \ 'look': {
+      \   'convertCase': v:true,
+      \   'dict': v:null
+      \ }})
 ```
 
 ## Configuration options
@@ -32,6 +44,9 @@ Convert the candidates to UPPERCASE if all input characters are uppercase.
 
 ### loud ddc (converter)
 A converter instead of option for ddc
+
+### dict cmp ddc (type: null|string)
+null or specify the dict file path
 
 ## Alternatives
 * [ujihisa/neco-look](https://github.com/ujihisa/neco-look)
