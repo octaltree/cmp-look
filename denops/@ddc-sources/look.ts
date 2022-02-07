@@ -65,6 +65,7 @@ function convert(query: string, words: string[]): string[] {
 
 type Params = {
   convertCase: boolean;
+  dict: undefined | string;
 };
 
 export class Source extends BaseSource<Params> {
@@ -72,7 +73,13 @@ export class Source extends BaseSource<Params> {
     sourceParams,
     completeStr,
   }: GatherCandidatesArguments<Params>): Promise<Candidate[]> {
-    const out = await run(["look", "--", completeStr]);
+    const out = await run(
+      ["look", "--", completeStr].concat(
+        typeof sourceParams.dict == "string"
+          ? [sourceParams.dict]
+          : [],
+      ),
+    );
     const words = out.split("\n").map((w) => w.trim()).filter((w) => w);
     const candidates = (words: string[]) => words.map((word) => ({ word }));
     const cased = sourceParams.convertCase
@@ -84,6 +91,7 @@ export class Source extends BaseSource<Params> {
   params(): Params {
     const params: Params = {
       convertCase: true,
+      dict: undefined,
     };
     return params;
   }
