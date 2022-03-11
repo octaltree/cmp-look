@@ -1,5 +1,5 @@
-import { BaseSource, Candidate } from "https://deno.land/x/ddc_vim/types.ts#^";
-import { GatherCandidatesArguments } from "https://deno.land/x/ddc_vim/base/source.ts";
+import { BaseSource, Item } from "https://deno.land/x/ddc_vim/types.ts#^";
+import { GatherArguments } from "https://deno.land/x/ddc_vim/base/source.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 async function run(cmd: string[]): Promise<string> {
@@ -69,10 +69,10 @@ type Params = {
 };
 
 export class Source extends BaseSource<Params> {
-  async gatherCandidates({
+  async gather({
     sourceParams,
     completeStr,
-  }: GatherCandidatesArguments<Params>): Promise<Candidate[]> {
+  }: GatherArguments<Params>): Promise<Item[]> {
     const args = typeof sourceParams.dict == "string"
       ? ["-f", "--", completeStr, sourceParams.dict]
       : ["--", completeStr];
