@@ -1,6 +1,7 @@
 local cmp = require('cmp')
 local luv = require('luv')
 local debug = require('cmp.utils.debug')
+local config = require('cmp.config')
 
 local M = {}
 
@@ -117,18 +118,50 @@ do
   end
 end
 
-M.complete = function(self, request, callback)
-  local q = string.sub(request.context.cursor_before_line, request.offset)
-  local should_convert_case = request.option.convert_case or false
-  local should_convert_loud = (request.option.loud or false) and isUpper(q)
-  local args
-  do
-    if request.option.dict then
-      args = {'-f', '--', q, request.option.dict}
-    else
-      args = {'--', q}
+local function construct_args(q, option, len)
+  local args = {}
+  -- https://github.com/util-linux/util-linux/blob/90eeee21c69aa805709376ad8282e68b5bd65c34/misc-utils/look.c#L137-L149
+  local dflag = not option.dict or option.df
+  if option.dict then
+    if option.dflag then
+      table.insert(args, '-d')
+    end
+    if option.fflag then
+      table.insert(args, '-f')
+    end
+    for _, x in ipairs({'--', q, option.dict}) do
+      table.insert(args, x)
+    end
+  else
+    for _, x in ipairs({'--', q}) do
+      table.insert(args, x)
     end
   end
+  if dflag then
+    local alph = string.gsub(q, '%W', '')
+    if string.len(alph) < len then
+      return nil
+    end
+  end
+  return args
+end
+
+-- Generic source options should be easily accessible from all sources
+local function get_keyword_length(request)
+  if request.keyword_length then
+    return request.keyword_length
+  end
+  return config.get().completion.keyword_length or 1
+end
+
+M.complete = function(self, request, callback)
+  local q = string.sub(request.context.cursor_before_line, request.offset)
+  local args = construct_args(q, request.option, get_keyword_length(request))
+  if not args then
+    callback({})
+  end
+  local should_convert_case = request.option.convert_case or false
+  local should_convert_loud = (request.option.loud or false) and isUpper(q)
   local stdioe = pipes()
   local handle, pid
   local buf = ''
