@@ -121,7 +121,7 @@ end
 local function construct_args(q, option, len)
   local args = {}
   -- https://github.com/util-linux/util-linux/blob/90eeee21c69aa805709376ad8282e68b5bd65c34/misc-utils/look.c#L137-L149
-  local dflag = not option.dict or option.df
+  local dflag = not option.dict or option.dflag
   if option.dict then
     if option.dflag then
       table.insert(args, '-d')
