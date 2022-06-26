@@ -123,66 +123,53 @@ M.complete = function(self, request, callback)
   local should_convert_loud = (request.option.loud or false) and isUpper(q)
   local args
   do
-    -- In case it's an all matching char, such as "_".
-    if (q:match("%W")) then
-
-      args = false
-
-    elseif request.option.dict then
-
+    if request.option.dict then
       args = {'-f', '--', q, request.option.dict}
-
     else
-
       args = {'--', q}
-
     end
   end
-
-  if args then
-
-    local stdioe = pipes()
-    local handle, pid
-    local buf = ''
-    local words = {}
-    do
-      local spawn_params = {
-        args = args,
-        stdio = stdioe
-      }
-      handle, pid = luv.spawn('look', spawn_params, function(code, signal)
-        stdioe[1]:close()
-        stdioe[2]:close()
-        stdioe[3]:close()
-        handle:close()
-        local xs = words
-        if should_convert_case then xs = convert_case(q, xs) end
-        if should_convert_loud then
-          xs = map(function(w) return w:upper() end, xs)
-        end
-        callback(result(xs))
-      end)
-      if handle == nil then
-        debug.log(string.format("start `%s` failed: %s", cmd, pid))
+  local stdioe = pipes()
+  local handle, pid
+  local buf = ''
+  local words = {}
+  do
+    local spawn_params = {
+      args = args,
+      stdio = stdioe
+    }
+    handle, pid = luv.spawn('look', spawn_params, function(code, signal)
+      stdioe[1]:close()
+      stdioe[2]:close()
+      stdioe[3]:close()
+      handle:close()
+      local xs = words
+      if should_convert_case then xs = convert_case(q, xs) end
+      if should_convert_loud then
+        xs = map(function(w) return w:upper() end, xs)
       end
-      luv.read_start(stdioe[2], function(err, chunk)
-        assert(not err, err)
-        if chunk then
-          buf = buf .. chunk
-        end
-        while true do
-          local l, rest = line(buf)
-          if l == nil then
-            break
-          end
-          buf = rest
-          local w = trim(l)
-          if w ~= '' then
-            table.insert(words, w)
-          end
-        end
-      end)
+      callback(result(xs))
+    end)
+    if handle == nil then
+      debug.log(string.format("start `%s` failed: %s", cmd, pid))
     end
+    luv.read_start(stdioe[2], function(err, chunk)
+      assert(not err, err)
+      if chunk then
+        buf = buf .. chunk
+      end
+      while true do
+        local l, rest = line(buf)
+        if l == nil then
+          break
+        end
+        buf = rest
+        local w = trim(l)
+        if w ~= '' then
+          table.insert(words, w)
+        end
+      end
+    end)
   end
 end
 
