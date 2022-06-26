@@ -69,16 +69,46 @@ function convert(query: string, words: string[]): string[] {
 type Params = {
   convertCase: boolean;
   dict: undefined | string;
+  dflag: boolean;
+  fflag: boolean;
 };
+
+function construct_args(
+  q: string,
+  params: Params,
+  len: number,
+): null | string[] {
+  // https://github.com/util-linux/util-linux/blob/90eeee21c69aa805709376ad8282e68b5bd65c34/misc-utils/look.c#L137-L149
+  const dflag = !params.dict || params.dflag;
+  let args = [];
+  if (typeof params.dict == "string") {
+    if (params.dflag) args.push("-d");
+    if (params.fflag) args.push("-f");
+    args = args.concat(["--", q, params.dict]);
+  } else {
+    args = ["--", q];
+  }
+  if (dflag) {
+    const alphanumeric = q.replace(/[^a-zA-Z0-9]/g, "");
+    if (alphanumeric.length < len) {
+      return null;
+    }
+  }
+  return args;
+}
 
 export class Source extends BaseSource<Params> {
   async gather({
     sourceParams,
+    sourceOptions,
     completeStr,
   }: GatherArguments<Params>): Promise<Item[]> {
-    const args = typeof sourceParams.dict == "string"
-      ? ["-f", "--", completeStr, sourceParams.dict]
-      : ["--", completeStr];
+    const args = construct_args(
+      completeStr,
+      sourceParams,
+      sourceOptions.minKeywordLength,
+    );
+    if (!args) return [];
     const out = await run(["look"].concat(args));
     const words = out.split("\n").map((w) => w.trim()).filter((w) => w);
     const candidates = (words: string[]) => words.map((word) => ({ word }));
@@ -92,6 +122,8 @@ export class Source extends BaseSource<Params> {
     const params: Params = {
       convertCase: true,
       dict: undefined,
+      dflag: false,
+      fflag: false,
     };
     return params;
   }

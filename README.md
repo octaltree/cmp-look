@@ -48,6 +48,23 @@ A converter instead of option for ddc
 ### dict cmp ddc (type: null|string)
 null or specify the dict file path
 
+### dflag cmp ddc (type: boolean)
+"-d" is passed Transparently to look. Remove non-alphanumeric characters from
+keywords and recalculate keyword_length.
+
+> Use normal dictionary character set and order, i.e., only
+> blanks and alphanumeric characters are compared. This is on
+> by default if no file is specified.
+
+### fflag cmp ddc (type: boolean)
+"-f" is passed Transparently to look.
+
+> Ignore the case of alphabetic characters. This is on by
+> default if no file is specified.
+
+## Breaking Changes
+* 2022-06-23 Do not pass fflag when the dictionary is set.
+
 ## Alternatives
 * [ujihisa/neco-look](https://github.com/ujihisa/neco-look)
 * [matsui54/ddc-dictionary](https://github.com/matsui54/ddc-dictionary)
