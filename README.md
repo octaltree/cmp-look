@@ -1,9 +1,14 @@
 # look source for [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
-This is [look](https://man7.org/linux/man-pages/man1/look.1.html) source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp) and [Shougo/ddc.vim](https://github.com/Shougo/ddc.vim) inspired by [ujihisa/neco-look](https://github.com/ujihisa/neco-look).
+
+This is [look](https://man7.org/linux/man-pages/man1/look.1.html) source for
+[hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp) and
+[Shougo/ddc.vim](https://github.com/Shougo/ddc.vim) inspired by
+[ujihisa/neco-look](https://github.com/ujihisa/neco-look).
 
 ![http://gyazo.com/c21c8201fa7a571c7665bc7455d88631.png](http://gyazo.com/c21c8201fa7a571c7665bc7455d88631.png)
 
 ## For nvim-cmp
+
 ```lua
 require('cmp').setup({
     sources = {
@@ -21,6 +26,7 @@ require('cmp').setup({
 ```
 
 ## For ddc
+
 ```vim
 call ddc#custom#patch_global('sources', ['look'])
 call ddc#custom#patch_global('sourceOptions', {
@@ -37,34 +43,42 @@ call ddc#custom#patch_global('sourceParams', {
 ## Configuration options
 
 ### convert_case cmp/ convertCase ddc (type: boolean)
+
 Convert the candidates to match the input characters in the case.
 
 ### loud cmp (type: boolean)
+
 Convert the candidates to UPPERCASE if all input characters are uppercase.
 
 ### loud ddc (converter)
+
 A converter instead of option for ddc
 
 ### dict cmp ddc (type: null|string)
+
 null or specify the dict file path
 
 ### dflag cmp ddc (type: boolean)
+
 "-d" is passed Transparently to look. Remove non-alphanumeric characters from
 keywords and recalculate keyword_length.
 
-> Use normal dictionary character set and order, i.e., only
-> blanks and alphanumeric characters are compared. This is on
-> by default if no file is specified.
+> Use normal dictionary character set and order, i.e., only blanks and
+> alphanumeric characters are compared. This is on by default if no file is
+> specified.
 
 ### fflag cmp ddc (type: boolean)
+
 "-f" is passed Transparently to look.
 
-> Ignore the case of alphabetic characters. This is on by
-> default if no file is specified.
+> Ignore the case of alphabetic characters. This is on by default if no file is
+> specified.
 
 ## Breaking Changes
-* 2022-06-23 Do not pass fflag when the dictionary is set.
+
+- 2022-06-23 Do not pass fflag when the dictionary is set.
 
 ## Alternatives
-* [ujihisa/neco-look](https://github.com/ujihisa/neco-look)
-* [matsui54/ddc-dictionary](https://github.com/matsui54/ddc-dictionary)
+
+- [ujihisa/neco-look](https://github.com/ujihisa/neco-look)
+- [matsui54/ddc-dictionary](https://github.com/matsui54/ddc-dictionary)

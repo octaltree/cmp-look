@@ -1,8 +1,8 @@
 import {
   BaseSource,
   Item,
-} from "https://deno.land/x/ddc_vim@v2.2.0/types.ts#^";
-import { GatherArguments } from "https://deno.land/x/ddc_vim@v2.2.0/base/source.ts#^";
+} from "https://deno.land/x/ddc_vim@v2.5.1/types.ts#^";
+import { GatherArguments } from "https://deno.land/x/ddc_vim@v2.5.1/base/source.ts#^";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 async function run(cmd: string[]): Promise<string> {
@@ -111,11 +111,11 @@ export class Source extends BaseSource<Params> {
     if (!args) return [];
     const out = await run(["look"].concat(args));
     const words = out.split("\n").map((w) => w.trim()).filter((w) => w);
-    const candidates = (words: string[]) => words.map((word) => ({ word }));
+    const items = (words: string[]) => words.map((word) => ({ word }));
     const cased = sourceParams.convertCase
       ? convert(completeStr, words)
       : words;
-    return candidates(cased);
+    return items(cased);
   }
 
   params(): Params {
