@@ -1,8 +1,8 @@
 import {
   BaseSource,
   Item,
-} from "https://deno.land/x/ddc_vim@v2.5.1/types.ts#^";
-import { GatherArguments } from "https://deno.land/x/ddc_vim@v2.5.1/base/source.ts#^";
+} from "https://deno.land/x/ddc_vim@v4.3.1/types.ts#^";
+import { GatherArguments } from "https://deno.land/x/ddc_vim@v4.3.1/base/source.ts#^";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 async function run(cmd: string, args: string[]): Promise<string> {

@@ -1,5 +1,5 @@
-import { BaseFilter, Item } from "https://deno.land/x/ddc_vim@v2.5.1/types.ts";
-import { FilterArguments } from "https://deno.land/x/ddc_vim@v2.5.1/base/filter.ts";
+import { BaseFilter, Item } from "https://deno.land/x/ddc_vim@v4.3.1/types.ts";
+import { FilterArguments } from "https://deno.land/x/ddc_vim@v4.3.1/base/filter.ts";
 
 function isLower(c: string): boolean {
   return /^[a-z]$/g.test(c);
