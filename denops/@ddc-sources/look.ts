@@ -5,10 +5,20 @@ import {
 import { GatherArguments } from "https://deno.land/x/ddc_vim@v2.5.1/base/source.ts#^";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
-async function run(cmd: string[]): Promise<string> {
-  const p = Deno.run({ cmd, stdout: "piped", stderr: "null", stdin: "null" });
-  await p.status();
-  return new TextDecoder().decode(await p.output());
+async function run(cmd: string, args: string[]): Promise<string> {
+  const proc = new Deno.Command(
+    cmd,
+    {
+      args,
+      cwd: Deno.cwd(),
+      stdout: "piped",
+      stderr: "null",
+      stdin: "null",
+    },
+  );
+
+  const { stdout } = await proc.output();
+  return new TextDecoder().decode(stdout);
 }
 
 function isLower(c: string): boolean {
@@ -109,7 +119,7 @@ export class Source extends BaseSource<Params> {
       sourceOptions.minKeywordLength,
     );
     if (!args) return [];
-    const out = await run(["look"].concat(args));
+    const out = await run("look", args);
     const words = out.split("\n").map((w) => w.trim()).filter((w) => w);
     const items = (words: string[]) => words.map((word) => ({ word }));
     const cased = sourceParams.convertCase
