@@ -1,8 +1,5 @@
-import {
-  BaseFilter,
-  Item,
-} from "https://deno.land/x/ddc_vim@v2.2.0/types.ts#^";
-import { FilterArguments } from "https://deno.land/x/ddc_vim@v2.2.0/base/filter.ts#^";
+import { BaseFilter, Item } from "https://deno.land/x/ddc_vim@v4.3.1/types.ts";
+import { FilterArguments } from "https://deno.land/x/ddc_vim@v4.3.1/base/filter.ts";
 
 function isLower(c: string): boolean {
   return /^[a-z]$/g.test(c);
@@ -16,16 +13,16 @@ type Params = Record<string, never>;
 
 export class Filter extends BaseFilter<Params> {
   filter(
-    { completeStr, candidates }: FilterArguments<Params>,
+    { completeStr, items }: FilterArguments<Params>,
   ): Promise<Item[]> {
     const cs = completeStr.split("");
-    if (cs.some(isLower) || cs.every((c) => !isUpper(c))) {
-      return Promise.resolve(candidates);
+    if (cs.some(isLower) || cs.every((c: string) => !isUpper(c))) {
+      return Promise.resolve(items);
     }
-    return Promise.resolve(candidates.map((candidate) => ({
-      ...candidate,
-      word: candidate.word.toUpperCase(),
-      abbr: candidate.abbr ? candidate.abbr.toUpperCase() : undefined,
+    return Promise.resolve(items.map((item: Item) => ({
+      ...item,
+      word: item.word.toUpperCase(),
+      abbr: item.abbr ? item.abbr.toUpperCase() : undefined,
     })));
   }
 
